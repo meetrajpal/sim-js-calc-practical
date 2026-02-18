@@ -1,0 +1,12 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.trig-popover {
+  max-width: none !important;
+  width: 300px;
+}
+
+.trig-popover .popover-body {
+  width: 100%;
+}
