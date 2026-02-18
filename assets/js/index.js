@@ -18,16 +18,118 @@ if (localStorage.getItem("calcTheme")) {
 
 const trigContent = `
   <div class="row row-cols-4 g-1 mb-1">
-    <div class="col"><button class="btn border w-100 py-2" data-action="trigSecond">2<sup>nd</sup></button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="sin" data-first-label="sin" data-first-action="sin" data-second-label="sin<sup>-1</sup>" data-second-action="asin">sin</button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="cos" data-first-label="cos" data-first-action="cos" data-second-label="cos<sup>-1</sup>" data-second-action="acos">cos</button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="tan" data-first-label="tan" data-first-action="tan" data-second-label="tan<sup>-1</sup>" data-second-action="atan">tan</button></div>
+    <div class="col">
+      <input
+        type="checkbox"
+        class="btn-check"
+        id="trigSecondBtn"
+        autocomplete="off"
+      />
+      <label
+        class="btn cstBtn w-100 py-2"
+        for="trigSecondBtn"
+        data-action="trigSecond" title="trigSecond"
+        >2<sup>nd</sup></label
+      >
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="sin" title="sin"
+        data-first-label="sin"
+        data-first-action="sin"
+        data-second-label="sin<sup>-1</sup>"
+        data-second-action="asin"
+        data-third-label="sinh"
+        data-third-action="sinh"
+      >
+        sin
+      </button>
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="cos" title="cos"
+        data-first-label="cos"
+        data-first-action="cos"
+        data-second-label="cos<sup>-1</sup>"
+        data-second-action="acos"
+        data-third-label="cosh"
+        data-third-action="cosh"
+      >
+        cos
+      </button>
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="tan" title="tan"
+        data-first-label="tan"
+        data-first-action="tan"
+        data-second-label="tan<sup>-1</sup>"
+        data-second-action="atan"
+        data-third-label="tanh"
+        data-third-action="tanh"
+      >
+        tan
+      </button>
+    </div>
   </div>
   <div class="row row-cols-4 g-1">
-    <div class="col"><button class="btn border w-100 py-2" data-action="hyp">hyp</button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="sec" data-first-label="sec" data-first-action="sec" data-second-label="sec<sup>-1</sup>" data-second-action="asec">sec</button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="csc" data-first-label="csc" data-first-action="csc" data-second-label="csc<sup>-1</sup>" data-second-action="acsc">csc</button></div>
-    <div class="col"><button class="btn border w-100 py-2" data-action="cot" data-first-label="cot" data-first-action="cot" data-second-label="cot<sup>-1</sup>" data-second-action="acot">cot</button></div>
+    <div class="col">
+      <input type="checkbox" class="btn-check" id="hypBtn" autocomplete="off" />
+      <label class="btn cstBtn w-100 py-2" for="hypBtn" data-action="hyp" title="hyp"
+        >hyp</label
+      >
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="sec" title="sec"
+        data-first-label="sec"
+        data-first-action="sec"
+        data-second-label="sec<sup>-1</sup>"
+        data-second-action="asec"
+        data-third-label="sech"
+        data-third-action="sech"
+      >
+        sec
+      </button>
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="csc" title="csc"
+        data-first-label="csc"
+        data-first-action="csc"
+        data-second-label="csc<sup>-1</sup>"
+        data-second-action="acsc"
+        data-third-label="csch"
+        data-third-action="csch"
+      >
+        csc
+      </button>
+    </div>
+    <div class="col">
+      <button
+        class="btn cstBtn w-100 py-2"
+        data-second-trigo="true"
+        data-action="cot" title="cot"
+        data-first-label="cot"
+        data-first-action="cot"
+        data-second-label="cot<sup>-1</sup>"
+        data-second-action="acot"
+        data-third-label="coth"
+        data-third-action="coth"
+      >
+        cot
+      </button>
+    </div>
   </div>
 `;
 
@@ -42,27 +144,41 @@ const trigPopover = new bootstrap.Popover(document.getElementById("trigBtn"), {
   fallbackPlacements: [],
 });
 
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".trig-popover [data-action]");
-  if (!btn) return;
-  handleAction(btn.dataset.action);
-});
+const fnContent = `
+  <div class="row row-cols-3 g-1 mb-1">
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="abs" title="abs">|x|</button>
+    </div>
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="floor" title="floor">&lfloor; x &rfloor;</button>
+    </div>
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="ceil" title="ceil">&lceil; x &rceil;</button>
+    </div>
+  </div>
+  <div class="row row-cols-3 g-1">
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="rand" title="rand">rand</button>
+    </div>
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="dms" title="dms">&rarr;dms</button>
+    </div>
+    <div class="col">
+      <button class="btn cstBtn w-100 py-2" data-action="deg" title="deg">&rarr;deg</button>
+    </div>
+  </div>
+`;
 
-function toggleTrigSecond() {
-  document.querySelectorAll(".popover [data-second-label]").forEach((btn) => {
-    const isInverse = btn.textContent.includes("-1");
-    console.log("hi");
-    if (isInverse) {
-      btn.innerHTML = btn.dataset.secondLabel;
-      btn.dataset.action = btn.dataset.secondAction;
-      console.log("hi");
-    } else {
-      btn.innerHTML = btn.dataset.firstLabel;
-      btn.dataset.action = btn.dataset.firstAction;
-      console.log("bye");
-    }
-  });
-}
+const fnPopover = new bootstrap.Popover(document.getElementById("fnBtn"), {
+  html: true,
+  sanitize: false,
+  content: fnContent,
+  placement: "bottom",
+  trigger: "click",
+  customClass: "fn-popover",
+  boundary: "clippingParents",
+  fallbackPlacements: [],
+});
 
 const buttonLayouts = {
   standard: [
@@ -286,33 +402,40 @@ function renderBtnGrid() {
         const checkBox = document.createElement("input");
         checkBox.type = "checkbox";
         checkBox.className = "btn-check";
-        checkBox.id = "toggleSecond";
+        checkBox.id = "toggleSecondScientific";
         checkBox.autocomplete = "off";
 
         const label = document.createElement("label");
-        label.className = "btn border w-100 h-100 fs-4";
-        label.setAttribute("for", "toggleSecond");
+        label.className = "btn cstBtn w-100 h-100 fs-4";
+        label.setAttribute("for", "toggleSecondScientific");
         label.innerHTML = obj.label;
 
         checkBox.addEventListener("change", (e) => {
-          toggleSecondLabels(e.target.checked);
+          toggleSecondScientificLabels(e.target.checked);
         });
 
         col.appendChild(checkBox);
         col.appendChild(label);
       } else {
         const btn = document.createElement("button");
-        btn.className = "btn border w-100 h-100 fs-4";
+        btn.className = "btn cstBtn w-100 h-100 fs-4";
         btn.innerHTML = obj.label;
         btn.dataset.action = obj.action;
+        btn.title = obj.action;
 
         btn.dataset.firstLabel = obj.label;
         btn.dataset.firstAction = obj.action;
 
         if (obj.secondLabel) btn.dataset.secondLabel = obj.secondLabel;
-        if (obj.secondAction) btn.dataset.secondAction = obj.secondAction;
+        if (obj.secondAction) {
+          btn.dataset.secondAction = obj.secondAction;
+          btn.dataset.secondScientific = true;
+        }
 
-        if (obj?.primary) btn.classList.add("btn-primary");
+        if (obj?.primary) {
+          btn.classList.add("btn-primary");
+          btn.classList.remove("cstBtn");
+        }
         col.appendChild(btn);
       }
       rowDiv.appendChild(col);
@@ -321,8 +444,20 @@ function renderBtnGrid() {
   }
 }
 
-function toggleSecondLabels(isSecond) {
-  document.querySelectorAll("[data-second-label]").forEach((btn) => {
+function toggleSecondScientificLabels(isSecond) {
+  document.querySelectorAll("[data-second-scientific]").forEach((btn) => {
+    if (isSecond) {
+      btn.innerHTML = btn.dataset.secondLabel;
+      btn.dataset.action = btn.dataset.secondAction;
+    } else {
+      btn.innerHTML = btn.dataset.firstLabel;
+      btn.dataset.action = btn.dataset.firstAction;
+    }
+  });
+}
+
+function toggleSecondTrigoLabels(isSecond) {
+  document.querySelectorAll("[data-second-trigo]").forEach((btn) => {
     if (isSecond) {
       btn.innerHTML = btn.dataset.secondLabel;
       btn.dataset.action = btn.dataset.secondAction;
@@ -347,8 +482,12 @@ document.getElementById("standardBtn").addEventListener("click", () => {
   if (calcCurMode.getMode() !== "standard") {
     calcCurMode.setMode("standard");
     calcTitle.innerText = "Standard";
-    document.getElementById("scientificControls").classList.add("d-none");
-    document.getElementById("scientificControls").classList.remove("d-block");
+    document
+      .querySelectorAll(".scientificControls")
+      .forEach((x) => x.classList.add("d-none"));
+    document
+      .querySelectorAll(".scientificControls")
+      .forEach((x) => x.classList.remove("d-flex"));
     renderBtnGrid();
   }
   hideSidebar();
@@ -358,11 +497,61 @@ document.getElementById("scientificBtn").addEventListener("click", () => {
   if (calcCurMode.getMode() !== "scientific") {
     calcCurMode.setMode("scientific");
     calcTitle.innerText = "Scientific";
-    document.getElementById("scientificControls").classList.remove("d-none");
-    document.getElementById("scientificControls").classList.add("d-block");
+    document
+      .querySelectorAll(".scientificControls")
+      .forEach((x) => x.classList.remove("d-none"));
+    document
+      .querySelectorAll(".scientificControls")
+      .forEach((x) => x.classList.add("d-flex"));
+    document
+      .querySelector("#trigSecondBtn")
+      ?.addEventListener("change", (e) => {
+        console.log("Hi");
+        toggleSecondTrigoLabels(e.target.checked);
+      });
     renderBtnGrid();
   }
   hideSidebar();
+});
+
+document.addEventListener("change", (e) => {
+  if (e.target.matches("#hypBtn")) {
+    const isThird = e.target.checked;
+
+    const popoverEl = e.target.closest(".popover");
+    if (!popoverEl) return;
+
+    popoverEl.querySelectorAll("[data-second-trigo]").forEach((btn) => {
+      btn.innerHTML = isThird ? btn.dataset.thirdLabel : btn.dataset.firstLabel;
+
+      btn.dataset.action = isThird
+        ? btn.dataset.thirdAction
+        : btn.dataset.firstAction;
+    });
+  } else if (e.target.matches("#trigSecondBtn")) {
+    const isSecond = e.target.checked;
+
+    const popoverEl = e.target.closest(".popover");
+    if (!popoverEl) return;
+
+    popoverEl.querySelectorAll("[data-second-trigo]").forEach((btn) => {
+      btn.innerHTML = isSecond
+        ? btn.dataset.secondLabel
+        : btn.dataset.firstLabel;
+
+      btn.dataset.action = isSecond
+        ? btn.dataset.secondAction
+        : btn.dataset.firstAction;
+    });
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const btn =
+    e.target.closest(".trig-popover [data-action]") ||
+    e.target.closest(".fn-popover [data-action]");
+  if (!btn) return;
+  handleAction(btn.dataset.action);
 });
 
 document.getElementById("darkModeSwitch").addEventListener("change", (e) => {
@@ -390,11 +579,13 @@ document.getElementById("btnGrid").addEventListener("click", (e) => {
   handleAction(action);
 });
 
-document.querySelector("#scientificControls").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-action]");
-  if (!btn) return;
-  handleAction(btn.dataset.action);
-});
+document.querySelectorAll(".scientificControls").forEach((x) =>
+  x.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    handleAction(btn.dataset.action);
+  }),
+);
 
 function handleAction(action) {
   switch (action) {
@@ -459,9 +650,6 @@ function handleAction(action) {
       break;
     case "reciprocal":
       reciprocal();
-      break;
-    case "trigSecond":
-      toggleSecondLabels(true);
       break;
     case "pi":
       insertPi();
@@ -573,6 +761,45 @@ function handleAction(action) {
       break;
     case "deg":
       degConvert();
+      break;
+    case "hyp":
+      hyp();
+      break;
+    case "sinh":
+      sinh();
+      break;
+    case "cosh":
+      cosh();
+      break;
+    case "tanh":
+      tanh();
+      break;
+    case "csch":
+      csch();
+      break;
+    case "sech":
+      sech();
+      break;
+    case "coth":
+      coth();
+      break;
+    case "asinh":
+      asinh();
+      break;
+    case "acosh":
+      acosh();
+      break;
+    case "atanh":
+      atanh();
+      break;
+    case "acsch":
+      acsch();
+      break;
+    case "asech":
+      asech();
+      break;
+    case "acoth":
+      acoth();
       break;
   }
 }
@@ -781,6 +1008,8 @@ function calculate() {
       break;
   }
 
+  saveHistory(`${previousValue} ${operator} ${currentValue}`, String(result));
+
   document.getElementById("lastResult").textContent =
     `${previousValue} ${operator} ${currentValue} =`;
   currentValue = String(result);
@@ -813,23 +1042,6 @@ function toggleFE() {
     ? parseFloat(currentValue).toExponential()
     : String(parseFloat(currentValue));
   updateDisplay();
-}
-
-function memoryClear() {
-  memory = 0;
-}
-function memoryRecall() {
-  currentValue = String(memory);
-  updateDisplay();
-}
-function memoryAdd() {
-  memory += parseFloat(currentValue);
-}
-function memorySubtract() {
-  memory -= parseFloat(currentValue);
-}
-function memoryStore() {
-  memory = parseFloat(currentValue);
 }
 
 function sin() {
@@ -895,6 +1107,56 @@ function rand() {
   updateDisplay();
 }
 
+function sinh() {
+  currentValue = String(Math.sinh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function cosh() {
+  currentValue = String(Math.cosh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function tanh() {
+  currentValue = String(Math.tanh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function csch() {
+  currentValue = String(1 / Math.sinh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function sech() {
+  currentValue = String(1 / Math.cosh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function coth() {
+  currentValue = String(1 / Math.tanh(parseFloat(currentValue)));
+  updateDisplay();
+}
+
+function asinh() {
+  currentValue = String(Math.asinh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function acosh() {
+  currentValue = String(Math.acosh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function atanh() {
+  currentValue = String(Math.atanh(parseFloat(currentValue)));
+  updateDisplay();
+}
+function acsch() {
+  currentValue = String(Math.asinh(1 / parseFloat(currentValue)));
+  updateDisplay();
+}
+function asech() {
+  currentValue = String(Math.acosh(1 / parseFloat(currentValue)));
+  updateDisplay();
+}
+function acoth() {
+  currentValue = String(Math.atanh(1 / parseFloat(currentValue)));
+  updateDisplay();
+}
+
 function dms() {
   const decimal = parseFloat(currentValue);
   const degrees = Math.floor(decimal);
@@ -908,3 +1170,74 @@ function degConvert() {
   currentValue = String(parseFloat(currentValue) * (180 / Math.PI));
   updateDisplay();
 }
+
+function getHistory() {
+  return JSON.parse(localStorage.getItem("calcHistory") || "[]");
+}
+
+function saveHistory(expression, result) {
+  const history = getHistory();
+  history.unshift({ expression, result, time: Date.now() });
+  if (history.length > 50) history.pop();
+  localStorage.setItem("calcHistory", JSON.stringify(history));
+  renderHistory();
+}
+
+function clearHistory() {
+  localStorage.removeItem("calcHistory");
+  renderHistory();
+}
+
+function renderHistory() {
+  const historyEl = document.getElementById("history");
+  const history = getHistory();
+
+  historyEl.innerHTML =
+    history.length === 0
+      ? "<p class='text-muted mt-3'>There's no history yet.</p>"
+      : history
+          .map(
+            (h) => `
+        <div class="border-bottom py-2 px-3 text-end history-item" data-result="${h.result}">
+          <div class="text-muted small">${h.expression}</div>
+          <div class="fs-5">${h.result}</div>
+        </div>
+      `,
+          )
+          .join("");
+}
+
+document.getElementById("history").addEventListener("click", (e) => {
+  const item = e.target.closest(".history-item");
+  if (!item) return;
+  currentValue = item.dataset.result;
+  updateDisplay();
+});
+
+function getMemory() {
+  return parseFloat(localStorage.getItem("calcMemory") || "0");
+}
+
+function saveMemory(val) {
+  localStorage.setItem("calcMemory", val);
+}
+
+function memoryClear() {
+  saveMemory(0);
+}
+function memoryRecall() {
+  currentValue = String(getMemory());
+  updateDisplay();
+}
+function memoryAdd() {
+  saveMemory(getMemory() + parseFloat(currentValue));
+}
+function memorySubtract() {
+  saveMemory(getMemory() - parseFloat(currentValue));
+}
+function memoryStore() {
+  saveMemory(parseFloat(currentValue));
+}
+
+renderHistory();
+memory = getMemory();
