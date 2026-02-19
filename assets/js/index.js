@@ -16,6 +16,26 @@ if (localStorage.getItem("calcTheme")) {
   }
 }
 
+const popoverTriggerList = document.querySelectorAll(
+  '[data-bs-toggle="popover"]',
+);
+
+document.addEventListener("click", function (e) {
+  popoverTriggerList.forEach((el) => {
+    const popover = bootstrap.Popover.getInstance(el);
+    const popoverEl = document.querySelector(".popover");
+
+    if (
+      popover &&
+      !el.contains(e.target) &&
+      popoverEl &&
+      !popoverEl.contains(e.target)
+    ) {
+      popover.hide();
+    }
+  });
+});
+
 const trigContent = `
   <div class="row row-cols-4 g-1 mb-1">
     <div class="col">
@@ -189,7 +209,7 @@ const buttonLayouts = {
       { label: "&larr;", action: "delete" },
     ],
     [
-      { label: "1/x", action: "reciprocal" },
+      { label: "<sup>1</sup>/x", action: "reciprocal" },
       { label: "x<sup>2</sup>", action: "square" },
       { label: "&radic;x", action: "sqrt" },
       { label: "&divide;", action: "divide" },
@@ -236,10 +256,10 @@ const buttonLayouts = {
         secondAction: "cube",
       },
       {
-        label: "1/x",
+        label: "<sup>1</sup>/x",
         action: "reciprocal",
       },
-      { label: "|x|", action: "abs" },
+      { label: "|X|", action: "abs" },
       { label: "exp", action: "exp" },
       { label: "mod", action: "mod" },
     ],
@@ -587,6 +607,12 @@ document.querySelectorAll(".scientificControls").forEach((x) =>
   }),
 );
 
+document.getElementById("memoryOperations").addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  handleAction(btn.dataset.action);
+});
+
 function handleAction(action) {
   switch (action) {
     case "0":
@@ -696,8 +722,11 @@ function handleAction(action) {
     case "fe-toggle":
       toggleFE();
       break;
+    case "exp":
+      toggleFE();
+      break;
     case "mc":
-      memoryClear();
+      clearMemory();
       break;
     case "mr":
       memoryRecall();
@@ -809,7 +838,7 @@ let previousValue = "";
 let operator = null;
 let resetResultScreen = false;
 
-function updateDisplay() {
+function updateResultDisplay() {
   document.getElementById("result").innerText = currentValue;
 }
 
@@ -820,7 +849,7 @@ function appendDigit(digit) {
   } else {
     currentValue += digit;
   }
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function addDecimal() {
@@ -829,7 +858,7 @@ function addDecimal() {
     resetResultScreen = false;
   }
   if (!currentValue.includes(".")) currentValue += ".";
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function setOperator(op) {
@@ -864,7 +893,7 @@ function calculate() {
   operator = null;
   previousValue = "";
   resetResultScreen = true;
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function clearAll() {
@@ -873,80 +902,80 @@ function clearAll() {
   operator = null;
   resetResultScreen = false;
   document.getElementById("lastResult").innerHTML = "&nbsp;";
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function clearEntry() {
   currentValue = "0";
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function deleteLast() {
   currentValue = currentValue.length > 1 ? currentValue.slice(0, -1) : "0";
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function negate() {
   currentValue = String(parseFloat(currentValue) * -1);
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function percent() {
   currentValue = String(parseFloat(currentValue) / 100);
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function reciprocal() {
   currentValue = String(1 / parseFloat(currentValue));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function square() {
   currentValue = String(Math.pow(parseFloat(currentValue), 2));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function cube() {
   currentValue = String(Math.pow(parseFloat(currentValue), 3));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function sqrt() {
   currentValue = String(Math.sqrt(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function cbrt() {
   currentValue = String(Math.cbrt(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function log10() {
   currentValue = String(Math.log10(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function ln() {
   currentValue = String(Math.log(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function absolute() {
   currentValue = String(Math.abs(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function factorial() {
   let n = parseInt(currentValue);
   if (n < 0) {
     currentValue = "Error";
-    updateDisplay();
+    updateResultDisplay();
     return;
   }
   let result = 1;
   for (let i = 2; i <= n; i++) result *= i;
   currentValue = String(result);
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function setPower() {
@@ -959,27 +988,27 @@ function setMod() {
 
 function insertPi() {
   currentValue = String(Math.PI);
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function insertE() {
   currentValue = String(Math.E);
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function epow() {
   currentValue = String(Math.pow(Math.E, parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function pow10() {
   currentValue = String(Math.pow(10, parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function pow2() {
   currentValue = String(Math.pow(2, parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function calculate() {
@@ -1016,7 +1045,7 @@ function calculate() {
   operator = null;
   previousValue = "";
   resetResultScreen = true;
-  updateDisplay();
+  updateResultDisplay();
 }
 
 let angleMode = "deg";
@@ -1041,120 +1070,120 @@ function toggleFE() {
   currentValue = feMode
     ? parseFloat(currentValue).toExponential()
     : String(parseFloat(currentValue));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function sin() {
   currentValue = String(Math.sin(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function cos() {
   currentValue = String(Math.cos(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function tan() {
   currentValue = String(Math.tan(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function csc() {
   currentValue = String(1 / Math.sin(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function sec() {
   currentValue = String(1 / Math.cos(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function cot() {
   currentValue = String(1 / Math.tan(toRad(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function asin() {
   currentValue = String(fromRad(Math.asin(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acos() {
   currentValue = String(fromRad(Math.acos(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function atan() {
   currentValue = String(fromRad(Math.atan(parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acsc() {
   currentValue = String(fromRad(Math.asin(1 / parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function asec() {
   currentValue = String(fromRad(Math.acos(1 / parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acot() {
   currentValue = String(fromRad(Math.atan(1 / parseFloat(currentValue))));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function floor() {
   currentValue = String(Math.floor(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function ceil() {
   currentValue = String(Math.ceil(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function rand() {
   currentValue = String(Math.random());
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function sinh() {
   currentValue = String(Math.sinh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function cosh() {
   currentValue = String(Math.cosh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function tanh() {
   currentValue = String(Math.tanh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function csch() {
   currentValue = String(1 / Math.sinh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function sech() {
   currentValue = String(1 / Math.cosh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function coth() {
   currentValue = String(1 / Math.tanh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function asinh() {
   currentValue = String(Math.asinh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acosh() {
   currentValue = String(Math.acosh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function atanh() {
   currentValue = String(Math.atanh(parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acsch() {
   currentValue = String(Math.asinh(1 / parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function asech() {
   currentValue = String(Math.acosh(1 / parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 function acoth() {
   currentValue = String(Math.atanh(1 / parseFloat(currentValue)));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function dms() {
@@ -1168,7 +1197,7 @@ function dms() {
 
 function degConvert() {
   currentValue = String(parseFloat(currentValue) * (180 / Math.PI));
-  updateDisplay();
+  updateResultDisplay();
 }
 
 function getHistory() {
@@ -1177,9 +1206,10 @@ function getHistory() {
 
 function saveHistory(expression, result) {
   const history = getHistory();
-  history.unshift({ expression, result, time: Date.now() });
+  history.unshift({ expression, result });
   if (history.length > 50) history.pop();
   localStorage.setItem("calcHistory", JSON.stringify(history));
+  optionHistory.checked = true;
   renderHistory();
 }
 
@@ -1198,7 +1228,7 @@ function renderHistory() {
       : history
           .map(
             (h) => `
-        <div class="border-bottom py-2 px-3 text-end history-item" data-result="${h.result}">
+        <div class="border-bottom py-2 px-3 text-end history-item" data-result="${h.result}" data-expression="${h.expression}">
           <div class="text-muted small">${h.expression}</div>
           <div class="fs-5">${h.result}</div>
         </div>
@@ -1207,37 +1237,109 @@ function renderHistory() {
           .join("");
 }
 
-document.getElementById("history").addEventListener("click", (e) => {
-  const item = e.target.closest(".history-item");
-  if (!item) return;
-  currentValue = item.dataset.result;
-  updateDisplay();
-});
+function getTopMemoryItem() {
+  const memory = getMemory();
+  return memory.length > 0 ? memory[0] : 0;
+}
 
 function getMemory() {
-  return parseFloat(localStorage.getItem("calcMemory") || "0");
+  return JSON.parse(localStorage.getItem("calcMemory") || "[]");
 }
 
 function saveMemory(val) {
-  localStorage.setItem("calcMemory", val);
+  const memory = getMemory();
+  memory.unshift(val);
+  if (memory.length > 50) memory.pop();
+  localStorage.setItem("calcMemory", JSON.stringify(memory));
+  optionMemory.checked = true;
+  renderMemory();
 }
 
-function memoryClear() {
-  saveMemory(0);
-}
 function memoryRecall() {
-  currentValue = String(getMemory());
-  updateDisplay();
+  currentValue = String(getTopMemoryItem());
+  updateResultDisplay();
 }
 function memoryAdd() {
-  saveMemory(getMemory() + parseFloat(currentValue));
+  saveMemory(getTopMemoryItem() + parseFloat(currentValue));
 }
 function memorySubtract() {
-  saveMemory(getMemory() - parseFloat(currentValue));
+  saveMemory(getTopMemoryItem() - parseFloat(currentValue));
 }
 function memoryStore() {
   saveMemory(parseFloat(currentValue));
 }
 
+function clearMemory() {
+  localStorage.removeItem("calcMemory");
+  renderMemory();
+}
+
+function renderMemory() {
+  const historyEl = document.getElementById("history");
+  memory = getMemory();
+
+  historyEl.innerHTML =
+    memory.length === 0
+      ? "<p class='text-muted mt-3'>There's nothing saved in memory.</p>"
+      : memory
+          .map(
+            (m) => `
+        <div class="border-bottom py-2 px-3 text-end memory-item" data-result="${m}">
+          <div>&nbsp;</div>
+          <div class="fs-5">${m}</div>
+        </div>
+      `,
+          )
+          .join("");
+}
+
+const optionHistory = document.getElementById("optionHistory");
+optionHistory.checked = true;
 renderHistory();
-memory = getMemory();
+
+const optionMemory = document.getElementById("optionMemory");
+
+document.getElementById("historyOptions").addEventListener("click", () => {
+  if (optionHistory.checked) {
+    renderHistory();
+  } else if (optionMemory.checked) {
+    renderMemory();
+  }
+});
+
+document.getElementById("history").addEventListener("click", (e) => {
+  if (optionHistory.checked) {
+    const item = e.target.closest(".history-item");
+    if (!item) return;
+    currentValue = item.dataset.result;
+    document.getElementById("lastResult").innerText = item.dataset.expression;
+  } else if (optionMemory.checked) {
+    const item = e.target.closest(".memory-item");
+    if (!item) return;
+    currentValue = item.dataset.result;
+  }
+  updateResultDisplay();
+});
+
+document.getElementById("trashBtn").addEventListener("click", () => {
+  if (optionHistory.checked) {
+    document.querySelector(".modal-body").innerText =
+      "Are you sure you want to clear the history?";
+  } else if (optionMemory.checked) {
+    document.querySelector(".modal-body").innerText =
+      "Are you sure you want to clear the memory?";
+  }
+});
+
+document.getElementById("modalConfirmBtn").addEventListener("click", () => {
+  if (optionHistory.checked) {
+    clearHistory();
+  } else if (optionMemory.checked) {
+    clearMemory();
+  }
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("clearStorageModal"),
+  );
+
+  modal.hide();
+});
